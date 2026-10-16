@@ -7,35 +7,43 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff4f7;color:#422a35;line-height:1.5}
 header{background:#8f365d;color:#fff;padding:23px 15px;text-align:center}header h1{margin:0 0 5px;font-size:1.7rem}header p{margin:0}
-main{max-width:1000px;margin:20px auto;padding:0 13px 30px}.tabs{display:flex;gap:8px;margin-bottom:14px}
+main{max-width:1050px;margin:20px auto;padding:0 13px 30px}.tabs{display:flex;gap:8px;margin-bottom:14px}
 .tabs button,.actions button{border:0;border-radius:7px;padding:11px 13px;cursor:pointer;font-weight:bold}
 .tabs button{flex:1;background:#f3dce6;color:#71314e}.tabs button.active,.actions button{background:#c04f7b;color:white}
 .panel{background:#fffdfd;border-radius:11px;padding:18px;box-shadow:0 3px 12px #8f365d12}.hidden{display:none}h2{margin-top:0}
 .small{font-size:.92rem;color:#795e6b}.question{border:1px solid #edcbd9;border-radius:9px;padding:13px;margin:12px 0}
-.qtitle{font-weight:bold;margin-bottom:8px}.category{color:#a83e6b;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;font-weight:bold}
-input[type=text],select{width:100%;padding:10px;border:1px solid #d5aebe;border-radius:6px;font-size:1rem;background:white}
+.qtitle{font-weight:bold;margin-bottom:4px;font-size:.85rem;color:#a83e6b;text-transform:uppercase}
+input[type=text],select{width:100%;padding:10px;border:1px solid #d5aebe;border-radius:6px;font-size:.95rem;background:white;margin-top:4px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.actions .secondary{background:#f3dce6;color:#522c3d}
 .result{margin-top:14px;padding:12px;background:#fce8f0;border-radius:8px}.feedback{font-size:.93rem;margin-top:7px}.correct{color:#16713b;font-weight:bold}.wrong{color:#b42318;font-weight:bold}
 footer{text-align:center;color:#795e6b;padding:0 12px 22px;font-size:.9rem}
+
+/* 3-Column Layout for Part 2 */
+.match-row{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.col-a{flex:0 0 75px;text-align:center}
+.col-b{flex:1 1 220px}
+.col-c{flex:2 1 280px}
+@media(max-width:768px){.match-row{flex-direction:column;align-items:stretch}.col-a{text-align:left}}
+
 @media(max-width:560px){.tabs{flex-direction:column}header h1{font-size:1.4rem}.panel{padding:13px}}
 </style>
 </head>
 <body>
-<header><h1>Electrical Tools — Complete PPT Review</h1><p>Part 1: identify tools from definitions · Part 2: match tools to their uses</p></header>
+<header><h1>Electrical Tools — Complete PPT Review</h1><p>Part 1: identify tools from definitions · Part 2: identify tool name and use from picture</p></header>
 <main>
-<div class="tabs"><button id="tab1" class="active" onclick="showSection(1)">Part 1: Identify the Tool</button><button id="tab2" onclick="showSection(2)">Part 2: Match the Use</button></div>
+<div class="tabs"><button id="tab1" class="active" onclick="showSection(1)">Part 1: Identify the Tool</button><button id="tab2" onclick="showSection(2)">Part 2: Picture, Name & Use Match</button></div>
 <section id="part1" class="panel">
 <h2>Part 1 — Identify the Tool</h2><p class="small">Type the tool name for each definition. Accepted alternative names are checked automatically.</p>
 <div id="identifyQuestions"></div>
 <div class="actions"><button onclick="checkIdentify()">Check Answers</button><button class="secondary" onclick="resetIdentify()">Try Again</button><button class="secondary" onclick="showSection(2)">Next Part →</button></div><div id="identifyResult" class="result hidden" aria-live="polite"></div>
 </section>
 <section id="part2" class="panel hidden">
-<h2>Part 2 — Match Each Tool to Its Use</h2><p class="small">Choose the matching function for every tool. Options are shuffled when the section loads.</p>
+<h2>Part 2 — Identify Tool Name & Use from Picture</h2><p class="small">Look at column <b>A</b> (Picture), select the correct tool name in column <b>B</b>, and select its correct use in column <b>C</b>.</p>
 <div id="matchQuestions"></div>
 <div class="actions"><button onclick="checkMatch()">Check Answers</button><button class="secondary" onclick="resetMatch()">Try Again</button><button class="secondary" onclick="showSection(1)">← Previous Part</button></div><div id="matchResult" class="result hidden" aria-live="polite"></div>
 </section>
 </main>
-<footer>Study aid based on the uploaded Lesson 1 — Electrical Tools PowerPoint. Tool functions follow the presentation; short definitions were added where the slides mainly showed a tool name.</footer>
+<footer>Study aid based on the uploaded Lesson 1 — Electrical Tools PowerPoint. Tool functions follow the presentation; short definitions were added where the slides mainly showed a tool name[cite: 1].</footer>
 <script>
 const tools = [
 {cat:"Driving tools",name:"Screwdriver",aliases:["screwdrivers"],def:"A hand tool used to loosen or tighten screws; it comes in different sizes and tip shapes.",use:"Loosens or tightens screws of the matching head type."},
@@ -97,9 +105,10 @@ const tools = [
 function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,"");}
 function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 function showSection(n){document.getElementById("part1").classList.toggle("hidden",n!==1);document.getElementById("part2").classList.toggle("hidden",n!==2);document.getElementById("tab1").classList.toggle("active",n===1);document.getElementById("tab2").classList.toggle("active",n===2);}
+
 function buildIdentify(){
  const root=document.getElementById("identifyQuestions");root.innerHTML="";
- tools.forEach((t,i)=>root.insertAdjacentHTML("beforeend",`<div class="question" id="iq${i}"><div class="category">${escapeHtml(t.cat)}</div><div class="qtitle">${i+1}. ${escapeHtml(t.def)}</div><input type="text" id="ia${i}" autocomplete="off" placeholder="Enter tool name"><div class="feedback" id="if${i}"></div></div>`));
+ tools.forEach((t,i)=>root.insertAdjacentHTML("beforeend",`<div class="question" id="iq${i}"><div class="qtitle">${escapeHtml(t.cat)}</div><div>${i+1}. ${escapeHtml(t.def)}</div><input type="text" id="ia${i}" autocomplete="off" placeholder="Enter tool name"><div class="feedback" id="if${i}"></div></div>`));
 }
 function checkIdentify(){
  let score=0;
@@ -107,15 +116,103 @@ function checkIdentify(){
  const r=document.getElementById("identifyResult");r.classList.remove("hidden");r.textContent=`Score: ${score} / ${tools.length}`;
 }
 function resetIdentify(){tools.forEach((t,i)=>{document.getElementById("ia"+i).value="";const f=document.getElementById("if"+i);f.textContent="";f.className="feedback";});document.getElementById("identifyResult").classList.add("hidden");}
+
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// Part 2: Col A (Picture), Col B (Tool Name Select), Col C (Use Select)
+// Image files sit beside index.html; explicit names handle lesson filename variants.
+const toolImages = {
+ "Screwdriver":"screwdriver.png","Flathead / Standard / Slotted Screwdriver":"flathead___standard___slotted_screwdriver.png",
+ "Phillips Screwdriver":"phillips_screwdriver.png","Stubby Screwdriver":"stubby_screwdriver.png","Allen Wrench / Hex Key":"allen_wrench___hex_key.png",
+ "Hammer":"hammer.png","Pliers":"pliers.png","Utility Knife":"utility_knife.png","Keyhole Saw":"keyhole_saw.png",
+ "Portable Cordless Drill":"portable_cordless_drill.png","Hole Saw":"hole_saw.png","Knockout Punch":"punch_tool_set.png","Gimlet":"gimlet.png",
+ "Steel Tape Measure":"steel_tape_measure.png","Folding Tape Measure / Folding Rule":"folding_tape_measure___folding_rule.png",
+ "Wire Gauge / American Wire Gauge (AWG)":"wire_gauge___american_wire_gauge__awg_.png","Level Bar":"level_bar.png","Plumb Bob":"plumb_bob.png",
+ "File":"file.png","Cold Chisel":"cold_chisel.png","Cape Chisel":"cape_chisel.png","Diamond Point Chisel":"diamond_point_chisel.png",
+ "Bull Point / Ball Point Chisel":"chisel_set.png","Wood Chisel":"wood_chisel.png","Open-End Wrench":"open_end_wrench.png","Adjustable Wrench":"adjustable_wrench.png",
+ "Offset Box Wrench":"offset_box_wrench.png","Socket Wrench":"socket_wrench.png","Torx Wrench":"torx_wrench.png","Pipe Wrench":"pipe_wrench.png",
+ "Tool Pouch / Holster":"tool_pouch___holster.png","Toolbox":"toolbox.png","Fish Tape":"fish_tape.png","Heat Gun":"heat_gun.png",
+ "Multipurpose Wiring Tool":"multipurpose_wiring_tool.png","Soldering Iron":"soldering_iron.png","Soldering Gun":"soldering_gun.png",
+ "Pipe Threader":"pipe_threader.png","Pipe Cutter":"pvc_conduit_pipe_cutter.png","Pipe Reamer":"pipe_reamer.png","Pipe Bender":"pipe_bender.png",
+ "Hickey":"hickey.png","One-Shot Pipe Bender":"one_shot_pipe_bender.png","PVC Conduit Pipe Cutter":"pvc_conduit_pipe_cutter.png",
+ "Pipe Vise and Stand":"pipe_vise_and_stand.png","Pipe Vise Tripod":"pipe_vise_tripod.png","Analog Multimeter":"analog_multimeter.png",
+ "Digital Multimeter (DMM)":"digital_multimeter__dmm_.png","Clamp-on Ammeter / Clamp Meter":"clamp_on_ammeter___clamp_meter.png",
+ "Electric Grinder / Portable Grinder":"electric_grinder___portable_grinder.png","Chain Saw":"chain_saw.png","Demolition Hammer":"demolition_hammer.png",
+ "Jack Hammer":"jack_hammer.png","Hydraulic Pipe Bender":"hydraulic_pipe_bender.png"
+};
 function buildMatch(){
- const root=document.getElementById("matchQuestions");root.innerHTML="";const uses=shuffle(tools.map(t=>t.use));
- tools.forEach((t,i)=>{const opts=shuffle([...uses]);root.insertAdjacentHTML("beforeend",`<div class="question"><div class="category">${escapeHtml(t.cat)}</div><div class="qtitle">${i+1}. ${escapeHtml(t.name)}</div><select id="ma${i}"><option value="">-- Select the correct use --</option>${opts.map(u=>`<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("")}</select><div class="feedback" id="mf${i}"></div></div>`);});
+ const root=document.getElementById("matchQuestions");
+ root.innerHTML="";
+ 
+ const allNames = tools.map(t => t.name);
+ const allUses = tools.map(t => t.use);
+ 
+ tools.forEach((t,i)=>{
+  const nameOpts = shuffle([...allNames]);
+  const useOpts = shuffle([...allUses]);
+  
+  // Column A displays the matching image asset from beside this HTML file.
+  const imgFilename = toolImages[t.name];
+  const defaultImg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="65" height="65"><rect width="100%" height="100%" fill="%23f3dce6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="11" fill="%2371314e" font-family="Arial">Tool Pic</text></svg>';
+  
+  root.insertAdjacentHTML("beforeend", `
+   <div class="question">
+    <div class="qtitle">${i+1}. ${escapeHtml(t.cat)}</div>
+    <div class="match-row">
+     <!-- A: Picture -->
+     <div class="col-a">
+      <img src="${imgFilename || ""}" alt="${escapeHtml(t.name)}" style="width:65px; height:65px; object-fit:contain; border:1px solid #edcbd9; border-radius:6px; background:#fff;" onerror="this.src='${defaultImg}';">
+     </div>
+     <!-- B: Tool Name Select Tag -->
+     <div class="col-b">
+      <label class="small" style="display:block; font-weight:bold;">Tool Name:</label>
+      <select id="nameChoice${i}">
+       <option value="">-- Select Tool Name --</option>
+       ${nameOpts.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("")}
+      </select>
+     </div>
+     <!-- C: Tool Use Select Tag -->
+     <div class="col-c">
+      <label class="small" style="display:block; font-weight:bold;">Tool Use:</label>
+      <select id="useChoice${i}">
+       <option value="">-- Select Tool Use --</option>
+       ${useOpts.map(use => `<option value="${escapeHtml(use)}">${escapeHtml(use)}</option>`).join("")}
+      </select>
+     </div>
+    </div>
+    <div class="feedback" id="mf${i}"></div>
+   </div>
+  `);
+ });
 }
+
 function checkMatch(){
- let score=0;tools.forEach((t,i)=>{const selected=document.getElementById("ma"+i).value;const f=document.getElementById("mf"+i);if(selected===t.use){score++;f.className="feedback correct";f.textContent="Correct!";}else{f.className="feedback wrong";f.textContent="Correct use: "+t.use;}});const r=document.getElementById("matchResult");r.classList.remove("hidden");r.textContent=`Score: ${score} / ${tools.length}`;
+ let score=0;
+ tools.forEach((t,i)=>{
+  const selName = document.getElementById("nameChoice"+i).value;
+  const selUse = document.getElementById("useChoice"+i).value;
+  const f = document.getElementById("mf"+i);
+  
+  const nameCorrect = (selName === t.name);
+  const useCorrect = (selUse === t.use);
+  
+  if(nameCorrect && useCorrect){
+   score++;
+   f.className="feedback correct";
+   f.textContent="Correct! Both name and use match.";
+  } else {
+   f.className="feedback wrong";
+   f.innerHTML=`Incorrect. Correct Name: <b>${escapeHtml(t.name)}</b> | Correct Use: <b>${escapeHtml(t.use)}</b>`;
+  }
+ });
+ const r = document.getElementById("matchResult");
+ r.classList.remove("hidden");
+ r.textContent=`Score: ${score} / ${tools.length}`;
 }
 function resetMatch(){buildMatch();document.getElementById("matchResult").classList.add("hidden");}
-buildIdentify();buildMatch();
+
+buildIdentify();
+buildMatch();
 </script>
-</body></html>
+</body>
+</html>
