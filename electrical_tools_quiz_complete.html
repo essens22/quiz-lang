@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Tools — Complete PPT Review</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff4f7;color:#422a35;line-height:1.5}
+header{background:#8f365d;color:#fff;padding:23px 15px;text-align:center}header h1{margin:0 0 5px;font-size:1.7rem}header p{margin:0}
+main{max-width:1000px;margin:20px auto;padding:0 13px 30px}.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button,.actions button{border:0;border-radius:7px;padding:11px 13px;cursor:pointer;font-weight:bold}
+.tabs button{flex:1;background:#f3dce6;color:#71314e}.tabs button.active,.actions button{background:#c04f7b;color:white}
+.panel{background:#fffdfd;border-radius:11px;padding:18px;box-shadow:0 3px 12px #8f365d12}.hidden{display:none}h2{margin-top:0}
+.small{font-size:.92rem;color:#795e6b}.question{border:1px solid #edcbd9;border-radius:9px;padding:13px;margin:12px 0}
+.qtitle{font-weight:bold;margin-bottom:8px}.category{color:#a83e6b;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;font-weight:bold}
+input[type=text],select{width:100%;padding:10px;border:1px solid #d5aebe;border-radius:6px;font-size:1rem;background:white}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.actions .secondary{background:#f3dce6;color:#522c3d}
+.result{margin-top:14px;padding:12px;background:#fce8f0;border-radius:8px}.feedback{font-size:.93rem;margin-top:7px}.correct{color:#16713b;font-weight:bold}.wrong{color:#b42318;font-weight:bold}
+footer{text-align:center;color:#795e6b;padding:0 12px 22px;font-size:.9rem}
+@media(max-width:560px){.tabs{flex-direction:column}header h1{font-size:1.4rem}.panel{padding:13px}}
+</style>
+</head>
+<body>
+<header><h1>Electrical Tools — Complete PPT Review</h1><p>Part 1: identify tools from definitions · Part 2: match tools to their uses</p></header>
+<main>
+<div class="tabs"><button id="tab1" class="active" onclick="showSection(1)">Part 1: Identify the Tool</button><button id="tab2" onclick="showSection(2)">Part 2: Match the Use</button></div>
+<section id="part1" class="panel">
+<h2>Part 1 — Identify the Tool</h2><p class="small">Type the tool name for each definition. Accepted alternative names are checked automatically.</p>
+<div id="identifyQuestions"></div>
+<div class="actions"><button onclick="checkIdentify()">Check Answers</button><button class="secondary" onclick="resetIdentify()">Try Again</button><button class="secondary" onclick="showSection(2)">Next Part →</button></div><div id="identifyResult" class="result hidden" aria-live="polite"></div>
+</section>
+<section id="part2" class="panel hidden">
+<h2>Part 2 — Match Each Tool to Its Use</h2><p class="small">Choose the matching function for every tool. Options are shuffled when the section loads.</p>
+<div id="matchQuestions"></div>
+<div class="actions"><button onclick="checkMatch()">Check Answers</button><button class="secondary" onclick="resetMatch()">Try Again</button><button class="secondary" onclick="showSection(1)">← Previous Part</button></div><div id="matchResult" class="result hidden" aria-live="polite"></div>
+</section>
+</main>
+<footer>Study aid based on the uploaded Lesson 1 — Electrical Tools PowerPoint. Tool functions follow the presentation; short definitions were added where the slides mainly showed a tool name.</footer>
+<script>
+const tools = [
+{cat:"Driving tools",name:"Screwdriver",aliases:["screwdrivers"],def:"A hand tool used to loosen or tighten screws; it comes in different sizes and tip shapes.",use:"Loosens or tightens screws of the matching head type."},
+{cat:"Driving tools",name:"Flathead / Standard / Slotted Screwdriver",aliases:["flathead screwdriver","standard screwdriver","slotted screwdriver","flat head screwdriver"],def:"A screwdriver designed for a screw with one straight slot in its head.",use:"Drives screws with a single-slot head."},
+{cat:"Driving tools",name:"Phillips Screwdriver",aliases:["phillips screwdriver","philips screwdriver","cross slot screwdriver","crosshead screwdriver"],def:"A screwdriver with a cross-shaped tip for a screw with a cross-slot head.",use:"Drives screws with cross-slot heads."},
+{cat:"Driving tools",name:"Stubby Screwdriver",aliases:["stubby screwdriver","short screwdriver"],def:"A screwdriver with a short shank or blade and a short handle for use where a standard screwdriver will not fit.",use:"Turns screws in tight spaces where a standard screwdriver cannot be used."},
+{cat:"Driving tools",name:"Allen Wrench / Hex Key",aliases:["allen wrench","hex key","allen key","hex wrench"],def:"A tool, shaped like a small wrench or driver, used with a screw that has a hexagonal socket.",use:"Drives screws with hexagonal slot heads."},
+{cat:"Striking tools",name:"Hammer",aliases:["hammers"],def:"A hard-headed tool, commonly made with a steel, plastic, or rubber head, used for striking work.",use:"Drives or pounds nails and can pull nails out."},
+{cat:"Splicing / gripping / holding tools",name:"Pliers",aliases:["plier"],def:"A metal hand tool with handles, often insulated for electrical work, and jaws for gripping or manipulating wire.",use:"Cuts, twists, bends, holds, and grips wires and cables."},
+{cat:"Cutting tools",name:"Utility Knife",aliases:["utility knife","electrician utility knife"],def:"A knife used by electricians for cutting wire insulation and other cable-related materials.",use:"Cuts insulation and performs other cutting tasks involving wires and cables."},
+{cat:"Cutting tools",name:"Keyhole Saw",aliases:["keyhole saw","jab saw","compass saw"],def:"A narrow hand saw used for intricate cuts and openings in confined areas.",use:"Makes openings in walls, including openings for electrical outlets."},
+{cat:"Boring tools",name:"Portable Cordless Drill",aliases:["portable drill cordless","cordless drill","portable drill"],def:"A portable, battery-powered tool that rotates a drill bit to make holes.",use:"Drills holes in materials for wiring, conduit, and electrical components."},
+{cat:"Boring tools",name:"Hole Saw",aliases:["hole saw"],def:"A circular cutting attachment designed to make a large round hole.",use:"Cuts larger circular holes in materials such as wood or drywall."},
+{cat:"Boring tools",name:"Knockout Punch",aliases:["knockout punch","knockout punches","knockout punch tool"],def:"A punch tool designed to make a clean circular opening in a metal electrical box or enclosure.",use:"Creates clean, precise holes in metal electrical boxes or enclosures."},
+{cat:"Boring tools",name:"Gimlet",aliases:["gimlet"],def:"A small, wire-like boring tool used to start a hole in material.",use:"Makes initial holes for split-knob screws."},
+{cat:"Measuring tools",name:"Steel Tape Measure",aliases:["steel tape measure","steel tape"],def:"A durable flexible measuring tape with a steel blade for measuring lengths and layouts.",use:"Measures conduit, wire, and other components and supports layout and alignment work."},
+{cat:"Measuring tools",name:"Folding Tape Measure / Folding Rule",aliases:["folding tape measure","folding rule","folding ruler"],def:"A measuring rule made of rigid sections that fold together for storage.",use:"Measures lengths using a rigid folding rule."},
+{cat:"Measuring tools",name:"Wire Gauge / American Wire Gauge (AWG)",aliases:["wire gauge","american wire gauge","awg"],def:"A gauge or sizing system used to identify the diameter or size of electrical wire.",use:"Identifies or checks the size of electrical wire."},
+{cat:"Measuring tools",name:"Level Bar",aliases:["level bar","level"],def:"A tool used to check whether a surface or installation is level.",use:"Checks horizontal level during installation."},
+{cat:"Measuring tools",name:"Plumb Bob",aliases:["plumb bob","plumb-bob"],def:"A weighted object suspended on a line to establish a true vertical reference.",use:"Checks vertical alignment."},
+{cat:"Other electrical tools",name:"File",aliases:["files","file"],def:"A hand tool with a roughened surface used to remove small amounts of material.",use:"Shapes, smooths, and cleans metal components such as wires, terminals, and enclosures."},
+{cat:"Other electrical tools — chisels",name:"Cold Chisel",aliases:["cold chisel"],def:"A metal-cutting chisel designed for cutting metal when it is cold.",use:"Cuts or chips cold metal."},
+{cat:"Other electrical tools — chisels",name:"Cape Chisel",aliases:["cape chisel"],def:"A narrow chisel with a long cutting edge suited to narrow grooves.",use:"Cuts narrow grooves or channels in metal."},
+{cat:"Other electrical tools — chisels",name:"Diamond Point Chisel",aliases:["diamond point chisel","diamond-point chisel"],def:"A chisel with a diamond-shaped point for working into corners or V-shaped grooves.",use:"Cleans or forms corners and V-shaped grooves."},
+{cat:"Other electrical tools — chisels",name:"Bull Point / Ball Point Chisel",aliases:["bull point chisel","ball point chisel","bull point","ball point"],def:"A pointed chisel used for concentrated impact on masonry or similar material.",use:"Breaks or chips material at a small, concentrated point."},
+{cat:"Other electrical tools — chisels",name:"Wood Chisel",aliases:["wood chisel"],def:"A sharp-edged chisel designed for cutting or shaping wood.",use:"Cuts, pares, or shapes wood."},
+{cat:"Other electrical tools — wrenches",name:"Open-End Wrench",aliases:["open end wrench","open-ended wrench"],def:"A wrench with open jaws that grip two opposite sides of a nut or bolt.",use:"Tightens or loosens accessible nuts and bolts."},
+{cat:"Other electrical tools — wrenches",name:"Adjustable Wrench",aliases:["adjustable wrench","crescent wrench"],def:"A wrench with a movable jaw that can fit different nut and bolt sizes.",use:"Tightens or loosens different sizes of nuts and bolts."},
+{cat:"Other electrical tools — wrenches",name:"Offset Box Wrench",aliases:["box wrench offset","offset box wrench","box wrench"],def:"A closed-ring wrench with an offset handle to reach fasteners in recessed or awkward positions.",use:"Turns nuts and bolts where an offset handle helps provide access."},
+{cat:"Other electrical tools — wrenches",name:"Socket Wrench",aliases:["socket wrench"],def:"A wrench that uses a removable socket fitted over a nut or bolt head.",use:"Tightens or loosens fasteners using a matching socket."},
+{cat:"Other electrical tools — wrenches",name:"Torx Wrench",aliases:["torx wrench","torx key"],def:"A driver or wrench with a star-shaped tip for Torx fasteners.",use:"Turns screws or bolts with a star-shaped Torx recess."},
+{cat:"Other electrical tools — wrenches",name:"Pipe Wrench",aliases:["pipe wrench"],def:"A wrench with toothed jaws designed to grip and turn pipes.",use:"Grips and turns pipe during pipe work."},
+{cat:"Other electrical tools",name:"Tool Pouch / Holster",aliases:["tool pouch","tool pouches","holster","tool holster"],def:"A wearable pouch or holder that keeps frequently used tools within reach.",use:"Carries and provides quick access to frequently used tools."},
+{cat:"Other electrical tools",name:"Toolbox",aliases:["toolbox","tool box"],def:"A container designed to keep tools organized during storage and transport.",use:"Stores and transports tools safely and in an organized way."},
+{cat:"Electrician's specialized tools",name:"Fish Tape",aliases:["fish tape"],def:"A long, flexible strip or wire used to guide wiring through concealed routes.",use:"Routes and pulls new wiring through walls, electrical conduits, or ceilings."},
+{cat:"Electrician's specialized tools",name:"Heat Gun",aliases:["heat gun"],def:"A handheld tool that blows a stream of hot air.",use:"Shrinks heat-shrink tubing, strips paint, thaws frozen pipes, or softens adhesives."},
+{cat:"Electrician's specialized tools",name:"Multipurpose Wiring Tool",aliases:["multipurpose wiring tool","multi purpose wiring tool","multi-purpose wiring tool","wiring tool"],def:"A versatile hand tool that combines several wire-preparation functions.",use:"Strips insulation, cuts wires, and crimps terminals."},
+{cat:"Electrician's specialized tools",name:"Soldering Iron",aliases:["soldering iron"],def:"A hand tool with a heated tip used to melt solder.",use:"Heats solder to join electrical components and wires."},
+{cat:"Electrician's specialized tools",name:"Soldering Gun",aliases:["soldering gun"],def:"A gun-shaped, high-wattage soldering device that heats quickly.",use:"Handles heavier or larger soldering jobs that require quick heating."},
+{cat:"Conduit and pipe tools",name:"Pipe Threader",aliases:["pipe threader"],def:"A tool that cuts screw threads into the end of a pipe.",use:"Threads metal conduit ends so they can connect to threaded fittings."},
+{cat:"Conduit and pipe tools",name:"Pipe Cutter",aliases:["pipe cutter"],def:"A tool designed to cut conduit or pipe cleanly and evenly.",use:"Cuts metal or PVC conduit pipes cleanly and evenly."},
+{cat:"Conduit and pipe tools",name:"Pipe Reamer",aliases:["pipe reamer","reamer"],def:"A tool used to remove rough edges and burrs from the inside of a cut pipe.",use:"Smooths the inside edge of conduit to help protect wires from damage."},
+{cat:"Conduit and pipe tools",name:"Pipe Bender",aliases:["pipe bender","conduit bender"],def:"A tool that forms a controlled bend in electrical conduit.",use:"Bends electrical metal conduit around obstacles or corners."},
+{cat:"Conduit and pipe tools",name:"Hickey",aliases:["hickey"],def:"A hand conduit-bending tool used to make bends in conduit.",use:"Bends conduit, especially for smaller or incremental adjustments."},
+{cat:"Conduit and pipe tools",name:"One-Shot Pipe Bender",aliases:["one shot pipe bender","one-shot pipe bender"],def:"A conduit bender designed to make a bend in one operation.",use:"Forms a conduit bend in one bending operation."},
+{cat:"Conduit and pipe tools",name:"PVC Conduit Pipe Cutter",aliases:["pvc conduit pipe cutter","pvc pipe cutter"],def:"A cutter specifically designed for PVC conduit.",use:"Cuts PVC conduit smoothly while reducing cracking or splitting."},
+{cat:"Conduit and pipe tools",name:"Pipe Vise and Stand",aliases:["pipe vise and stand","pipe vice and stand","pipe vise","pipe vice"],def:"A vise mounted on a stand that secures pipe or conduit during work.",use:"Holds pipe securely while cutting or threading and raises it to a convenient working height."},
+{cat:"Conduit and pipe tools",name:"Pipe Vise Tripod",aliases:["pipe vise tripod","pipe vice tripod","tripod pipe vise"],def:"A portable three-legged stand with a pipe vise mounted on top.",use:"Provides a stable portable support for pipe or conduit work on job sites."},
+{cat:"Electrical measuring instruments",name:"Analog Multimeter",aliases:["analog multimeter","analogue multimeter"],def:"An electrical meter that measures voltage, current, and resistance and displays readings with a moving needle.",use:"Measures AC/DC voltage, current, and resistance using a moving needle and calibrated scale."},
+{cat:"Electrical measuring instruments",name:"Digital Multimeter (DMM)",aliases:["digital multimeter","dmm"],def:"An electrical meter that displays measured values as numbers on a screen.",use:"Measures voltage, current, resistance, and sometimes capacitance, frequency, temperature, and more."},
+{cat:"Electrical measuring instruments",name:"Clamp-on Ammeter / Clamp Meter",aliases:["clamp on ammeter","clamp-on ammeter","clamp meter"],def:"An ammeter with jaws that clamp around a conductor to measure current.",use:"Measures AC/DC current without breaking the circuit."},
+{cat:"Power tools and hydraulic tools",name:"Electric Grinder / Portable Grinder",aliases:["electric grinder","portable grinder","electric grinder and portable grinder","grinder"],def:"A powered tool with an abrasive or cutting wheel used for cutting or grinding material.",use:"Cuts metal conduit, cable trays, and metal enclosures to required lengths and shapes."},
+{cat:"Power tools and hydraulic tools",name:"Chain Saw",aliases:["chain saw","chainsaw"],def:"A powered saw with a moving chain around a guide bar.",use:"Cuts trees or wooden poles to clear routes for outdoor or rural overhead power lines."},
+{cat:"Power tools and hydraulic tools",name:"Demolition Hammer",aliases:["demolition hammer"],def:"A powered impact tool designed to break masonry and other hard building materials.",use:"Breaks walls, floors, or masonry to install embedded electrical boxes, conduits, or panels."},
+{cat:"Power tools and hydraulic tools",name:"Jack Hammer",aliases:["jack hammer","jackhammer"],def:"A heavy powered hammer used to break hard surfaces such as concrete and asphalt.",use:"Breaks concrete, asphalt, or rock for trenching, underground conduits, electrical manholes, vaults, or grounding rods."},
+{cat:"Power tools and hydraulic tools",name:"Hydraulic Pipe Bender",aliases:["hydraulic pipe bender"],def:"A pipe-bending tool that uses hydraulic force to bend metal conduit.",use:"Bends EMT, IMC, or RMC metal conduit with force and precision."}
+];
+
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,"");}
+function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+function showSection(n){document.getElementById("part1").classList.toggle("hidden",n!==1);document.getElementById("part2").classList.toggle("hidden",n!==2);document.getElementById("tab1").classList.toggle("active",n===1);document.getElementById("tab2").classList.toggle("active",n===2);}
+function buildIdentify(){
+ const root=document.getElementById("identifyQuestions");root.innerHTML="";
+ tools.forEach((t,i)=>root.insertAdjacentHTML("beforeend",`<div class="question" id="iq${i}"><div class="category">${escapeHtml(t.cat)}</div><div class="qtitle">${i+1}. ${escapeHtml(t.def)}</div><input type="text" id="ia${i}" autocomplete="off" placeholder="Enter tool name"><div class="feedback" id="if${i}"></div></div>`));
+}
+function checkIdentify(){
+ let score=0;
+ tools.forEach((t,i)=>{const a=norm(document.getElementById("ia"+i).value);const accepted=[t.name,...t.aliases].map(norm);const ok=a && accepted.some(x=>a===x || (a.length>=6 && (x.includes(a)||a.includes(x))));const f=document.getElementById("if"+i);if(ok){score++;f.className="feedback correct";f.textContent="Correct!";}else{f.className="feedback wrong";f.textContent="Answer: "+t.name;}});
+ const r=document.getElementById("identifyResult");r.classList.remove("hidden");r.textContent=`Score: ${score} / ${tools.length}`;
+}
+function resetIdentify(){tools.forEach((t,i)=>{document.getElementById("ia"+i).value="";const f=document.getElementById("if"+i);f.textContent="";f.className="feedback";});document.getElementById("identifyResult").classList.add("hidden");}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildMatch(){
+ const root=document.getElementById("matchQuestions");root.innerHTML="";const uses=shuffle(tools.map(t=>t.use));
+ tools.forEach((t,i)=>{const opts=shuffle([...uses]);root.insertAdjacentHTML("beforeend",`<div class="question"><div class="category">${escapeHtml(t.cat)}</div><div class="qtitle">${i+1}. ${escapeHtml(t.name)}</div><select id="ma${i}"><option value="">-- Select the correct use --</option>${opts.map(u=>`<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("")}</select><div class="feedback" id="mf${i}"></div></div>`);});
+}
+function checkMatch(){
+ let score=0;tools.forEach((t,i)=>{const selected=document.getElementById("ma"+i).value;const f=document.getElementById("mf"+i);if(selected===t.use){score++;f.className="feedback correct";f.textContent="Correct!";}else{f.className="feedback wrong";f.textContent="Correct use: "+t.use;}});const r=document.getElementById("matchResult");r.classList.remove("hidden");r.textContent=`Score: ${score} / ${tools.length}`;
+}
+function resetMatch(){buildMatch();document.getElementById("matchResult").classList.add("hidden");}
+buildIdentify();buildMatch();
+</script>
+</body></html>
